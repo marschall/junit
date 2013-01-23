@@ -9,7 +9,6 @@ import static org.junit.Assert.fail;
 import static org.junit.experimental.results.PrintableResult.testResult;
 import static org.junit.experimental.results.ResultMatchers.hasSingleFailureContaining;
 import static org.junit.experimental.results.ResultMatchers.isSuccessful;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +23,6 @@ import org.junit.runner.Result;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-@SuppressWarnings("deprecation")
 public class MethodRulesTest {
     private static boolean wasRun;
 
@@ -288,6 +286,37 @@ public class MethodRulesTest {
         public void foo() {
             assertEquals("foo", counter.name);
         }
+    }
+    
+    public static class MethodRuleOnMethod {
+    	
+    	private boolean ruleWasRun = false;
+    	
+    	@Test
+    	public void testRuleHasRun() {
+    		assertTrue("rule was not has run", ruleWasRun);
+    	}
+    	
+    	@Rule
+    	public MethodRule methodRule() {
+    		return new MethodRule() {
+
+				public Statement apply(final Statement base,
+						FrameworkMethod method, Object target) {
+					return new Statement() {
+
+						@Override
+						public void evaluate() throws Throwable {
+							ruleWasRun = true;
+							base.evaluate();		
+						}
+										
+					};
+				}
+    			
+    		};
+    	}
+    	
     }
 
     @Test

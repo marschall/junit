@@ -18,6 +18,7 @@ import org.junit.internal.runners.statements.FailOnTimeout;
 import org.junit.internal.runners.statements.InvokeMethod;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
+import org.junit.rules.MethodRule;
 import org.junit.rules.RunRules;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -356,8 +357,13 @@ public class BlockJUnit4ClassRunner extends ParentRunner<FrameworkMethod> {
      *         test
      */
     protected List<org.junit.rules.MethodRule> rules(Object target) {
-        return getTestClass().getAnnotatedFieldValues(target, Rule.class,
-                org.junit.rules.MethodRule.class);
+        List<org.junit.rules.MethodRule> result= getTestClass().getAnnotatedMethodValues(
+        		target, Rule.class, org.junit.rules.MethodRule.class);
+        
+        result.addAll(getTestClass().getAnnotatedFieldValues(target,
+                Rule.class, org.junit.rules.MethodRule.class));
+        
+		return result;
     }
 
     /**
